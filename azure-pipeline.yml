@@ -44,7 +44,7 @@ jobs:
 
   - script: |
       git config --global user.email "cchiriac518@example.com"
-      git config --global user.name "azure-pipeline"
+      git config --global user.name "cchiriac518"
       git tag $(echo $(git tag) | awk -v OFS=' ' -v newTag=$NEW_TAG '{$(NF+1)=newTag; print}')
       git push --tags
     displayName: 'Create and push new tag'
