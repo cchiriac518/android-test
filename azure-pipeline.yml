@@ -1,0 +1,41 @@
+trigger:
+  branches:
+    include:
+      - develop
+
+ jobs:
+ - job: AndroidBuild
+#   displayName: 'Android Build'
+#   pool:
+#     vmImage: 'ubuntu-latest'
+
+   steps:
+#   - task: UseJavaVersion@1
+#     inputs:
+#       versionSpec: '8'
+#       addToPath: true
+
+#   - script: |
+#       sudo apt-get install android-sdk
+#       sudo apt-get install android-sdk-build-tools-28.0.3
+#       sudo apt-get install android-sdk-platform-28
+#       yes | sdkmanager --licenses
+
+#   - task: Gradle@2
+#     inputs:
+#       workingDirectory: '$(Build.SourcesDirectory)'
+#       gradleWrapperFile: 'gradlew'
+#       tasks: 'build check'
+#       options: '--daemon'
+
+#   - script: |
+#       # Publish the Android app to App Center
+#       appcenter distribute release --group "your-tester-group" --file $(Build.SourcesDirectory)/app/build/outputs/apk/release/app-release.apk --app "your-app-center-app-name" --token $(APP_CENTER_API_TOKEN)
+#     displayName: 'Publish to App Center'
+
+    - script: |
+          cd $(Build.ArtifactStagingDirectory)/APKs
+          apkFileName=$(ls *.apk)
+          curl -u $(JetpackUsername):$(JetpackAPIKey) \
+            -F "file=@$apkFileName" \
+            https://api.jetpack.io/v1/upload
