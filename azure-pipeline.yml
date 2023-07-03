@@ -43,6 +43,8 @@ jobs:
     displayName: 'Calculate new tag'
 
   - script: |
+      git config --global user.email "cchiriac518@example.com"
+      git config --global user.name "azure-pipeline"
       git tag $(echo $(git tag) | awk -v OFS=' ' -v newTag=$NEW_TAG '{$(NF+1)=newTag; print}')
       git push --tags
     displayName: 'Create and push new tag'
