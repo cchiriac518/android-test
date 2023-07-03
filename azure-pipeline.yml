@@ -8,6 +8,10 @@ pr:
     include:
       - '*'
 
+resources:
+variables:
+- group: Mobile-Apps
+
 jobs:
 - job: Build
   displayName: 'Build'
@@ -29,6 +33,7 @@ jobs:
   dependsOn: Build
   pool:
     vmImage: 'ubuntu-latest'
+
   steps:
   - checkout: self
     clean: true
@@ -46,7 +51,7 @@ jobs:
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
       git tag $(echo $(git tag) | awk -v OFS=' ' -v newTag=$NEW_TAG '{$(NF+1)=newTag; print}')
-      git remote set-url origin https://cchiriac518:${{ secrets.GITHUB_TOKEN }}@github.com/cchiriac518/android-test.git
+      git remote set-url origin https://cchiriac518:$(GITHUB_TOKEN)@github.com/cchiriac518/android-test.git
       git push --tags
     displayName: 'Create and push new tag'
 
