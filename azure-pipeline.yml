@@ -49,9 +49,9 @@ jobs:
   - script: |
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
-      git tag $(echo $(git tag) | awk -v OFS=' ' -v newTag=$NEW_TAG '{$(NF+1)=newTag; print}')
+      git tag v$(echo $(git tag -l "v*.*.*" | awk -F. -v OFS=. '{$(NF)=$NF+1;} 1') | awk -F. -v OFS=. '{$NF=$NF+1;} 1')
       git remote set-url origin https://cchiriac518:$(GITHUB_TOKEN)@github.com/cchiriac518/android-test.git
-      git push --tags
+      git push --follow-tags origin HEAD
     displayName: 'Create and push new tag'
 
   - task: Gradle@2
