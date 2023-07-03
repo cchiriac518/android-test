@@ -8,9 +8,8 @@ pr:
     include:
       - '*'
 
-resources:
 variables:
-- group: Mobile-Apps
+  - group: Mobile-Apps
 
 jobs:
 - job: Build
