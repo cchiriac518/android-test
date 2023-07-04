@@ -25,11 +25,15 @@ dependencies {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from components.release
         }
     }
-    
+}
+
+publishing {
     repositories {
-        mavenLocal()
+        maven {
+            url "https://jitpack.io"
+        }
     }
 }
