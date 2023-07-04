@@ -58,11 +58,11 @@ publishing {
     repositories {
         maven {
             // Use JitPack repository URL
-            url 'https://jitpack.io/cchiriac518/android-test'
+            url getJitPackURL()
             // Publish to JitPack using the JitPack repository credentials
             credentials {
-                username 'cchiriac518' // Replace with your GitHub username
-                password 'jp_eb2itd0cco6pi86qbv62n8423j' // Replace with your GitHub personal access token
+                username getJitPackUsername() // Replace with your GitHub username
+                password getJitPackPassword() // Replace with your GitHub personal access token
             }
         }
     }
