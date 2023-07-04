@@ -28,7 +28,6 @@ publishing {
 
             pom {
                 description = 'A description of my library'
-                ...
             }
         }
     }
