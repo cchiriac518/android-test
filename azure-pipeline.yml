@@ -56,11 +56,13 @@ jobs:
 
   - task: Gradle@2
     inputs:
-      workingDirectory: ''
+      workingDirectory: '$(Build.SourcesDirectory)'
       gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
-      tasks: 'publishToMavenLocal'
-      publishJUnitResults: false
+      tasks: 'clean build publishToMavenLocal'
+      publishJUnitResults: true
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '11'
+      publishBuildScan: false
     displayName: 'Publish to Maven local repository'
 
   - task: Gradle@2

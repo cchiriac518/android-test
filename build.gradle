@@ -1,47 +1,17 @@
-// // Top-level build file where you can add configuration options common to all sub-projects/modules.
-// buildscript {
-//     repositories {
-//         jcenter()
-//         google()
-//     }
-//     dependencies {
-//         classpath 'com.android.tools.build:gradle:3.5.0'
-//     }
-// }
-
-// allprojects {
-//     repositories {
-//         jcenter()
-//         google()
-//     }
-// }
-plugins {
-    id 'java-library'
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
 }
 
-group = 'com.example'
-version = '1.0.0'
-
-repositories {
-    jcenter()
-    google()
-}
-
-dependencies {
-    // Add your library dependencies here
-}
-
-tasks.register('publishToMavenLocal') {
-    group = 'publishing'
-    description = 'Publishes the library to the local Maven repository'
-
-    doLast {
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    from components.java
-                }
-            }
-        }
+allprojects {
+    repositories {
+        jcenter()
+        google()
     }
 }
