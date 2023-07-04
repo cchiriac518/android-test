@@ -56,7 +56,7 @@ jobs:
 
   - task: Gradle@2
     inputs:
-      workingDirectory: '$(Build.SourcesDirectory)'
+      workingDirectory: '$(Build.SourcesDirectory)/app/'
       gradleWrapperFile: 'gradlew'
       tasks: 'clean build publishToMavenLocal'
       publishJUnitResults: true
