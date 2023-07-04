@@ -15,3 +15,21 @@ allprojects {
         google()
     }
 }
+task publishToMavenLocal {
+    group = 'publishing'
+    description = 'Publishes the library to the local Maven repository'
+
+    // Define the task actions
+    doLast {
+        // Add the necessary actions to publish the library to the local Maven repository
+        // For example:
+        publishing.publications {
+            maven(MavenPublication) {
+                groupId = 'com.example'
+                artifactId = 'my-library'
+                version = '1.0.0'
+                from components.java
+            }
+        }
+    }
+}

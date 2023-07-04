@@ -54,14 +54,14 @@ jobs:
        git push origin HEAD:main
     displayName: 'Create and push new tag'
 
-  # - task: Gradle@2
-  #   inputs:
-  #     workingDirectory: ''
-  #     gradleWrapperFile: 'gradlew'
-  #     gradleOptions: '-Xmx3072m'
-  #     tasks: 'publishToMavenLocal'
-  #     publishJUnitResults: false
-  #   displayName: 'Publish to Maven local repository'
+  - task: Gradle@2
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      tasks: 'publishToMavenLocal'
+      publishJUnitResults: false
+    displayName: 'Publish to Maven local repository'
 
   - task: Gradle@2
     inputs:
