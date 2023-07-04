@@ -27,8 +27,8 @@ jobs:
       tasks: 'build'
       publishJUnitResults: false
 
-- job: TagAndPublish
-  displayName: 'Tag and Publish'
+- job: PublishToMavenLocal
+  displayName: 'Publish to Maven Local Repository'
   dependsOn: Build
   pool:
     vmImage: 'ubuntu-latest'
@@ -37,23 +37,6 @@ jobs:
   - checkout: self
     clean: true
 
-  - script: |
-      tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-      tag=${tag:-v1.0.0}
-      tag=${tag//[^0-9.]/}
-      newTag=$(echo $tag | awk -F. -v OFS=. '{$NF=$NF+1;} 1')
-      echo "##vso[task.setvariable variable=NEW_TAG]$newTag"
-      echo "##vso[task.setvariable variable=TAG]$tag"
-    displayName: 'Calculate new tag'
-
-  - script: |
-      git config --global user.email "cchiriac518@gmail.com"
-      git config --global user.name "cchiriac518"
-      git tag v$(echo $(git tag -l "v*.*.*" | awk -F. -v OFS=. '{$(NF)=$NF+1;} 1') | awk -F. -v OFS=. '{$NF=$NF+1;} 1')
-      git remote set-url origin https://cchiriac518:$(GITHUB_TOKEN)@github.com/cchiriac518/android-test.git
-       git push origin HEAD:main
-    displayName: 'Create and push new tag'
-
   - task: Gradle@2
     inputs:
       workingDirectory: ''
@@ -61,13 +44,25 @@ jobs:
       gradleOptions: '-Xmx3072m'
       tasks: 'publishToMavenLocal'
       publishJUnitResults: false
-    displayName: 'Publish to Maven local repository'
+
+- job: PublishToJitpack
+  displayName: 'Publish to Jitpack'
+  dependsOn: PublishToMavenLocal
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - script: |
+      echo "org.gradle.publish.url=https://jitpack.io" >> gradle.properties
+    displayName: 'Configure Jitpack URL'
 
   - task: Gradle@2
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
       gradleOptions: '-Xmx3072m'
-      tasks: 'publish -Pversion=$(TAG)'
+      tasks: 'publish'
       publishJUnitResults: false
-    displayName: 'Publish to Jitpack'
