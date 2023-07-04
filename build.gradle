@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    // Add your library dependencies here
+    classpath 'com.android.tools.build:gradle:3.5.0'
 }
 
 publishing {
