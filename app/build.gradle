@@ -16,22 +16,6 @@ android {
         }
     }
 }
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'org.company'
-            artifactId = 'sample'
-            version = "1.0.0-SNAPSHOT"
-            from components.java
-
-            pom {
-                description = 'A description of my library'
-            }
-        }
-    }
-}
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
