@@ -32,31 +32,65 @@
 //     }
 // }
 
-plugins {
-    id 'java-library'
-    id 'maven-publish'
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
 }
 
-group = 'com.example'
-version = '1.0.0'
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
 
-repositories {
-    jcenter()
-    google()
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "codepath.apps.demointroandroid"
+        minSdkVersion 21
+        targetSdkVersion 28
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
 }
 
 dependencies {
-    classpath 'com.android.tools.build:gradle:3.5.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.codepath.libraries:asynchttpclient:0.1.0'
 }
+
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from components.release
         }
     }
-    
+
     repositories {
-        mavenLocal()
+        maven {
+            url "https://jitpack.io"
+        }
     }
 }
+
