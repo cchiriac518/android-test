@@ -1,6 +1,7 @@
 package com.example;
 
-import com.example.MyLibrary;
+import com.github.cchiriac518.librarytest.MyLibrary;
+
 
 public class MyApp {
     public static void main(String[] args) {
