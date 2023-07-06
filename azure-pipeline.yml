@@ -1,68 +1,25 @@
 trigger:
   branches:
     include:
-      - '*'
+      - main
 
-pr:
-  branches:
-    include:
-      - '*'
+pool:
+  vmImage: 'ubuntu-latest'
 
-variables:
-  - group: Mobile-Apps
+steps:
+- task: UseJavaVersion@1
+  inputs:
+    versionSpec: '11'
+    addToPath: true
 
-jobs:
-- job: Build
+- script: ./gradlew build
   displayName: 'Build'
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - checkout: self
 
-  - task: Gradle@2
-    inputs:
-      workingDirectory: ''
-      gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
-      tasks: 'build'
-      publishJUnitResults: false
+- script: ./gradlew publish
+  displayName: 'Publish'
 
-- job: PublishToMavenLocal
-  displayName: 'Publish to Maven Local Repository'
-  dependsOn: Build
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - task: Gradle@2
-    inputs:
-      workingDirectory: ''
-      gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
-      tasks: 'publishToMavenLocal'
-      publishJUnitResults: false
-
-- job: PublishToJitpack
-  displayName: 'Publish to Jitpack'
-  dependsOn: PublishToMavenLocal
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - script: |
-      echo "org.gradle.publish.url=https://jitpack.io" >> gradle.properties
-    displayName: 'Configure Jitpack URL'
-
-  - task: Gradle@2
-    inputs:
-      workingDirectory: ''
-      gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
-      tasks: 'publish'
-      publishJUnitResults: false
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'my-app'
