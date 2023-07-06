@@ -10,6 +10,7 @@ steps:
 - script: |
     echo 'Java version:'
     java -version
+    chmod +x gradlew
   displayName: 'Check Java Version'
 
 - script: ./gradlew build
