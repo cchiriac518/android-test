@@ -8,15 +8,18 @@ pool:
 
 steps:
 - script: |
-    echo 'Java version:'
-    java -version
-    chmod +x gradlew
-  displayName: 'Check Java Version'
+    curl -s "https://get.sdkman.io" | bash
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install gradle
+    gradle wrapper
+  displayName: 'Install Gradle and Generate Wrapper'
 
-- script: ./gradlew build
+- script: |
+    ./gradlew build
   displayName: 'Build'
 
-- script: ./gradlew publish
+- script: |
+    ./gradlew publish
   displayName: 'Publish'
 
 - task: PublishBuildArtifacts@1
