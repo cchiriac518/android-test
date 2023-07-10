@@ -35,6 +35,8 @@ jobs:
     displayName: 'Create Git Tag and Push'
 
   - script: |
+      git config --global user.email "cchiriac518@gmail.com"
+      git config --global user.name "cchiriac518"
       echo $NEW_TAG > version.txt
       git add version.txt
       git commit -m "Update version.txt" --quiet
