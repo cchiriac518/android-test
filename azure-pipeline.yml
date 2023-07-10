@@ -26,12 +26,12 @@ jobs:
 
       PATCH=$((PATCH+1))
 
-      if [[ $PATCH -eq 4 ]]; then
+      if [[ $PATCH -eq 2 ]]; then
         MINOR=$((MINOR+1))
         PATCH=0
       fi
 
-      if [[ $MINOR -eq 4 ]]; then
+      if [[ $MINOR -eq 3 ]]; then
         MAJOR=$((MAJOR+1))
         MINOR=0
       fi
