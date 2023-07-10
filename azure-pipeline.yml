@@ -39,7 +39,7 @@ jobs:
       echo $NEW_TAG > version.txt
       git add version.txt
       git commit -m "Update version.txt" --quiet
-      git push origin HEAD
+      git push origin refs/main
     displayName: 'Update Version File'
 
   - script: |
