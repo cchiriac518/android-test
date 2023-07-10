@@ -29,6 +29,7 @@ jobs:
 
   - script: |
       echo "Creating Git tag $NEW_TAG"
+      git config --global --add url."git@github.com:"
       git tag $NEW_TAG
       git push origin $NEW_TAG
     displayName: 'Create Git Tag and Push'
