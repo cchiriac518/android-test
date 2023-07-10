@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.cchiriac518:library-test:v1.0.0'
+    implementation group: 'com.android.tools.build', name: 'gradle', version: '4.1.3'
 }
 
 appCenter {
