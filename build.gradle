@@ -19,8 +19,8 @@ allprojects {
         google()
     }
 }
-appCenter {
-    apiKey = "d1027090a840d6cae4f42f395bbbea1dd2102382"
-    ownerName = "cchiriac518@gmail.com"
-    appName = "test-android"
-}
+// appCenter {
+//     apiKey = "d1027090a840d6cae4f42f395bbbea1dd2102382"
+//     ownerName = "cchiriac518@gmail.com"
+//     appName = "test-android"
+// }
