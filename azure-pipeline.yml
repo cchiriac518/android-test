@@ -20,6 +20,8 @@ jobs:
       curl -s "https://get.sdkman.io" | bash
       source "$HOME/.sdkman/bin/sdkman-init.sh"
       sdk install gradle 8.1
+      ./gradlew wrapper --gradle-version 8.1 --distribution-type all
+
     displayName: 'Install Gradle'
 
   - task: Gradle@2
