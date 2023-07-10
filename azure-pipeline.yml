@@ -3,14 +3,14 @@ trigger:
     exclude:
       - '*'
 
-pr:
-  branches:
-    exclude:
-      - '*'
+  pr:
+    branches:
+      exclude:
+        - '*'
 
-paths:
-  exclude:
-    - version.txt
+  paths:
+    exclude:
+      - version.txt
 
 jobs:
 - job: IncrementVersion
