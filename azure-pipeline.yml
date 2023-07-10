@@ -18,11 +18,11 @@ jobs:
 
   - script: |
       LAST_TAG=$(git describe --abbrev=0 --tags)
-      VERSION_PARTS=(${LAST_TAG//./ })
-      MAJOR=${VERSION_PARTS[0]}
+      IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
+      MAJOR=${VERSION_PARTS[0]#v}
       MINOR=${VERSION_PARTS[1]}
       PATCH=${VERSION_PARTS[2]}
-      PATCH=$((PATCH+1))
+      MINOR=$((MINOR+1))
       NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
     displayName: 'Get Last Tag and Increment Minor Version'
