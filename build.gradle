@@ -1,8 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'java'
-    id 'io.github.angrycitizen.appcenter' version '1.1.0'
-}
 
 buildscript {
     repositories {
@@ -13,7 +9,10 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
-
+plugins {
+    id 'java'
+    id 'io.github.angrycitizen.appcenter' version '1.1.0'
+}
 allprojects {
     repositories {
         jcenter()
