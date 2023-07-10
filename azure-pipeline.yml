@@ -23,8 +23,7 @@ jobs:
       MINOR=${VERSION_PARTS[1]}
       PATCH=${VERSION_PARTS[2]}
       MINOR=$((MINOR+1))
-      NEW_TAG="$MAJOR.$MINOR.$PATCH"
-      NEW_TAG=$(echo $NEW_TAG | tr -d '.')
+      NEW_TAG="v$MAJOR.$MINOR.$PATCH"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
     displayName: 'Get Last Tag and Increment Minor Version'
 
