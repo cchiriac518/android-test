@@ -3,11 +3,6 @@ trigger:
     exclude:
       - '*'
 
-  pr:
-    branches:
-      exclude:
-        - '*'
-
   paths:
     exclude:
       - version.txt
