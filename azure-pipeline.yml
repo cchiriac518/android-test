@@ -23,7 +23,19 @@ jobs:
       MAJOR=${VERSION_PARTS[0]#v}
       MINOR=${VERSION_PARTS[1]}
       PATCH=${VERSION_PARTS[2]}
+
       PATCH=$((PATCH+1))
+
+      if [[ $PATCH -eq 4 ]]; then
+        MINOR=$((MINOR+1))
+        PATCH=0
+      fi
+
+      if [[ $MINOR -eq 4 ]]; then
+        MAJOR=$((MAJOR+1))
+        MINOR=0
+      fi
+
       NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
       NEW_TAG="${NEW_TAG// /}"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
