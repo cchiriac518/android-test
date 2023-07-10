@@ -17,7 +17,7 @@ jobs:
     persistCredentials: true
 
   - script: |
-      git fetch origin
+      git fetch --all
       LAST_TAG=$(git describe --abbrev=0 --tags)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
