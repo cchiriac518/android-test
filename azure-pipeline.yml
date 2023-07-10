@@ -18,7 +18,7 @@ jobs:
 
   - script: |
       git fetch --all
-      LAST_TAG=$(git describe --abbrev=0 --tags --always)
+      LAST_TAG=$(git tag --sort=-v:refname | head -n 1)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
       MINOR=${VERSION_PARTS[1]}
