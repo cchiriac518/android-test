@@ -17,12 +17,21 @@ jobs:
     persistCredentials: true
 
   - script: |
-      LAST_TAG=$(git describe --abbrev=0 --tags)
-      IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
-      MAJOR=${VERSION_PARTS[0]#v}
-      MINOR=${VERSION_PARTS[1]}
-      PATCH=${VERSION_PARTS[2]}
-      MINOR=$((MINOR+1))
+      # Check if any tags exist
+      if git show-ref --tags >/dev/null 2>&1; then
+        # Get the latest tag
+        LAST_TAG=$(git describe --abbrev=0 --tags)
+        IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
+        MAJOR=${VERSION_PARTS[0]#v}
+        MINOR=${VERSION_PARTS[1]}
+        PATCH=${VERSION_PARTS[2]}
+        MINOR=$((MINOR+1))
+      else
+        # Set initial version if no tags exist
+        MAJOR=1
+        MINOR=0
+        PATCH=0
+      fi
       NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
       NEW_TAG="${NEW_TAG// /}"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
