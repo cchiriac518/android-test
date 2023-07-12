@@ -26,8 +26,7 @@ jobs:
     fetchTags: true
 
   - script: |
-      pwd
-      ls -la
+      cd android-test
       LAST_TAG=$(git tag | head -n 1)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
