@@ -51,6 +51,7 @@ jobs:
   #   displayName: 'Publish to App Center'
 
   - script: |
+      cd $(Build.Repository.LocalPath)
       LAST_TAG=$(git tag | head -n 1)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
