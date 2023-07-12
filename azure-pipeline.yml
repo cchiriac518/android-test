@@ -15,6 +15,7 @@ jobs:
   steps:
   - checkout: self
     persistCredentials: true
+    fetchTags: true
 
   # - script: |
   #     curl -s "https://get.sdkman.io" | bash
@@ -89,8 +90,9 @@ jobs:
       echo "##vso[task.setvariable variable=APP_VERSION]$NEW_TAG"
     displayName: 'Set Pipeline Variable for Version Tracking'
 
-  - checkout: https://github.com/cchiriac518/library-test.git
-    persistCredentials: true # Specify the URL of the other repository
+  - checkout: git@github.com:cchiriac518/library-test.git
+    persistCredentials: true
+    fetchTags: true
 
   - script: |
       git config --global user.email "cchiriac518@gmail.com"
