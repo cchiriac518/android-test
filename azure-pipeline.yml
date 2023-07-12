@@ -89,7 +89,7 @@ jobs:
       echo "##vso[task.setvariable variable=APP_VERSION]$NEW_TAG"
     displayName: 'Set Pipeline Variable for Version Tracking'
 
-  - checkout: git://github.com/cchiriac518/library-test.git 
+  - checkout: https://github.com/cchiriac518/library-test.git
     persistCredentials: true # Specify the URL of the other repository
 
   - script: |
