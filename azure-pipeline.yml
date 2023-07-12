@@ -7,6 +7,13 @@ trigger:
     exclude:
       - version.txt
 
+repositories:
+- repository: test-app # Required as first property. Alias for the repository.
+  endpoint: github_sc
+  name: cchiriac518/library-test# repository name (format depends on 'type'; does not accept variables).
+  ref: refs/heads/develop # ref name to checkout; defaults to 'refs/heads/main'. The branch checked out by default whenever the resource trigger fires.
+  type: github # Type of repository: git, github, githubenterprise, and bitbucket.
+
 jobs:
 - job: IncrementVersion
   displayName: 'Increment Version'
@@ -90,7 +97,7 @@ jobs:
       echo "##vso[task.setvariable variable=APP_VERSION]$NEW_TAG"
     displayName: 'Set Pipeline Variable for Version Tracking'
 
-  - checkout: git@github.com:cchiriac518/library-test.git
+  - checkout: test-app
     persistCredentials: true
     fetchTags: true
 
