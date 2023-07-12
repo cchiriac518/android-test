@@ -53,12 +53,12 @@ jobs:
       PATCH=$((PATCH+1))
       BUILD=$((BUILD+1))
 
-      if [[ $PATCH -eq 99 ]]; then
+      if [[ $PATCH -eq 9 ]]; then
         MINOR=$((MINOR+1))
         PATCH=0
       fi
 
-      if [[ $MINOR -eq 99 ]]; then
+      if [[ $MINOR -eq 9 ]]; then
         MAJOR=$((MAJOR+1))
         MINOR=0
       fi
@@ -66,6 +66,8 @@ jobs:
       NEW_TAG="${MAJOR}.${MINOR}.${PATCH}.${BUILD}"
       NEW_TAG="${NEW_TAG// /}"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
+      sed -i "s/VERSION_NAME=*/VERSION_NAME=${MAJOR}.${MINOR}.${PATCH}/" gradle.properties
+      sed -i "s/VERSION_CODE=*/VERSION_CODE=${BUILD}/" gradle.properties
     displayName: 'Get Last Tag and Increment Minor Version'
 
   - script: |
@@ -86,6 +88,21 @@ jobs:
   - script: |
       echo "##vso[task.setvariable variable=APP_VERSION]$NEW_TAG"
     displayName: 'Set Pipeline Variable for Version Tracking'
+
+  - checkout: git://github.com/cchiriac518/library-test.git 
+    persistCredentials: true # Specify the URL of the other repository
+
+  - script: |
+      git config --global user.email "cchiriac518@gmail.com"
+      git config --global user.name "cchiriac518"
+      git checkout develop
+      sed -i 's/com.github.test-android-sdk:*/com.github.test-android-sdk:$NEW_TAG/' ./build.gradle
+      git config --global user.email "cchiriac518@gmail.com"
+      git config --global user.name "cchiriac518"
+      git add .
+      git commit -m "Updated android-sdk version"
+      git push origin develop
+    displayName: 'Modify file and commit changes'
 
 
 # trigger:
