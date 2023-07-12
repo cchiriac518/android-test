@@ -56,12 +56,14 @@ jobs:
     displayName: 'Get Last Tag and Increment Minor Version'
 
   - script: |
+      cd android-test
       echo "Creating Git tag $NEW_TAG"
       git tag $NEW_TAG
       git push origin --tags
     displayName: 'Create Git Tag and Push'
 
   - script: |
+      cd android-test
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
       echo $NEW_TAG > version.txt
@@ -80,9 +82,7 @@ jobs:
     fetchTags: true
 
   - script: |
-      git config --global user.email "cchiriac518@gmail.com"
-      git config --global user.name "cchiriac518"
-      git checkout develop
+      cd library-test
       sed -i 's/com.github.test-android-sdk:*/com.github.test-android-sdk:$NEW_TAG/' ./build.gradle
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
