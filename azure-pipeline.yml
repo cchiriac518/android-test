@@ -25,33 +25,9 @@ jobs:
     persistCredentials: true
     fetchTags: true
 
-  # - script: |
-  #     curl -s "https://get.sdkman.io" | bash
-  #     source "$HOME/.sdkman/bin/sdkman-init.sh"
-  #     sdk install gradle 8.1
-  #     gradle_path=$(which gradle)
-  #     $gradle_path wrapper --gradle-version 8.1 --distribution-type all
-
-  #   displayName: 'Install Gradle'
-
-  # - task: Gradle@2
-  #   inputs:
-  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
-  #     gradleWrapperFile: 'gradlew'
-  #     tasks: 'assembleDebug'
-  #   displayName: 'Build'
-
-  # - task: Gradle@2
-  #   inputs:
-  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
-  #     gradleWrapperFile: 'gradlew'
-  #     tasks: 'appCenterUpload'
-  #     javaHomeOption: 'JDKVersion'
-  #     jdkVersionOption: '11'
-  #   displayName: 'Publish to App Center'
-
   - script: |
-      cd $(Build.Repository.LocalPath)
+      pwd
+      ls -la
       LAST_TAG=$(git tag | head -n 1)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
@@ -77,6 +53,7 @@ jobs:
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
       sed -i "s/VERSION_NAME=*/VERSION_NAME=${MAJOR}.${MINOR}.${PATCH}/" ./gradle.properties
       sed -i "s/VERSION_CODE=*/VERSION_CODE=${BUILD}/" ./gradle.properties
+
     displayName: 'Get Last Tag and Increment Minor Version'
 
   - script: |
@@ -92,6 +69,7 @@ jobs:
       git add version.txt
       git commit -m "Update version.txt" --quiet
       git push origin HEAD:$(Build.SourceBranch)
+
     displayName: 'Update Version File'
 
   - script: |
@@ -144,3 +122,33 @@ jobs:
 #   inputs:
 #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #     ArtifactName: 'my-app'
+
+
+
+
+
+
+  # - script: |
+  #     curl -s "https://get.sdkman.io" | bash
+  #     source "$HOME/.sdkman/bin/sdkman-init.sh"
+  #     sdk install gradle 8.1
+  #     gradle_path=$(which gradle)
+  #     $gradle_path wrapper --gradle-version 8.1 --distribution-type all
+
+  #   displayName: 'Install Gradle'
+
+  # - task: Gradle@2
+  #   inputs:
+  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
+  #     gradleWrapperFile: 'gradlew'
+  #     tasks: 'assembleDebug'
+  #   displayName: 'Build'
+
+  # - task: Gradle@2
+  #   inputs:
+  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
+  #     gradleWrapperFile: 'gradlew'
+  #     tasks: 'appCenterUpload'
+  #     javaHomeOption: 'JDKVersion'
+  #     jdkVersionOption: '11'
+  #   displayName: 'Publish to App Center'
