@@ -57,10 +57,13 @@ jobs:
       NEW_TAG="${NEW_TAG// /}"
       NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
       NEW_VERSION_CODE="${BUILD}"
+      echo $NEW_VERSION_NAME
+      echo $NEW_VERSION_CODE
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
       cat ./gradle.properties
       sed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
       sed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+      echo "testtt"
       cat ./gradle.properties
 
       echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
