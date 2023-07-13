@@ -6,6 +6,7 @@ trigger:
   paths:
     exclude:
       - version.txt
+      - gradle.properties
 
 resources:
     repositories:
@@ -61,11 +62,16 @@ jobs:
       echo $NEW_VERSION_CODE
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
       cat ./gradle.properties
-      sed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
-      sed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+      sed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties | sed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+   # sed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
       echo "testtt"
       cat ./gradle.properties
-
+      git config --global user.email "cchiriac518@gmail.com"
+      git config --global user.name "cchiriac518"
+      echo $NEW_TAG > version.txt
+      git add version.txt gradle.properties
+      git commit -m "Update versions" --quiet
+      git push origin HEAD:$(Build.SourceBranch)
       echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
 
     displayName: 'Get Last Tag and Increment Minor Version'
@@ -77,16 +83,6 @@ jobs:
       git push origin --tags
     displayName: 'Create Git Tag and Push'
 
-  - script: |
-      cd android-test
-      git config --global user.email "cchiriac518@gmail.com"
-      git config --global user.name "cchiriac518"
-      echo $NEW_TAG > version.txt
-      git add version.txt
-      git commit -m "Update version.txt" --quiet
-      git push origin HEAD:$(Build.SourceBranch)
-
-    displayName: 'Update Version File'
 
   # - script: |
   #     echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
