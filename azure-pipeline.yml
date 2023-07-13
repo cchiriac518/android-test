@@ -27,6 +27,7 @@ jobs:
 
   - script: |
       cd android-test
+      git fetch --all --tags
       LAST_TAG=$(git tag | head -n 1)
       IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
       MAJOR=${VERSION_PARTS[0]#v}
@@ -88,6 +89,8 @@ jobs:
       git fetch --all
       git branch --list
       echo $(NEW_TAG)
+      echo $(APP_VERSION)
+      echo $(OLD_APP_VERSION)
       sed -i 's@sdk:$(OLD_APP_VERSION)@$sdk:$(APP_VERSION)@' ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
