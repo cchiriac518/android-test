@@ -69,7 +69,7 @@ jobs:
       git config --global user.name "cchiriac518"
       echo $NEW_TAG > version.txt
       git add version.txt gradle.properties
-      git commit -m "Update versions" --quiet
+      git commit -m "Update app version"
       git push origin HEAD:$(Build.SourceBranch)
       echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
 
