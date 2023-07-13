@@ -56,8 +56,8 @@ jobs:
       NEW_TAG="${MAJOR}.${MINOR}.${PATCH}.${BUILD}"
       NEW_TAG="${NEW_TAG// /}"
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
-      sed -i "s/${VERSION_NAME}/${MAJOR}.${MINOR}.${PATCH}/" ./gradle.properties
-      sed -i "s/${VERSION_CODE}/${BUILD}/" ./gradle.properties
+      sed -i "s/$VERSION_NAME/${MAJOR}.${MINOR}.${PATCH}/" ./gradle.properties
+      sed -i "s/$VERSION_CODE/${BUILD}/" ./gradle.properties
       cat ./gradle.properties
 
       echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
@@ -95,6 +95,7 @@ jobs:
       cd library-test
       git fetch --all
       git branch --list
+      echo $NEW_TAG
       sed -i "s/$(OLD_APP_VERSION)/$(NEW_TAG)/" ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
