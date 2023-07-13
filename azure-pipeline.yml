@@ -95,7 +95,7 @@ jobs:
       cd library-test
       git fetch --all
       git branch --list
-      sed -i "s/$(OLD_APP_VERSION)/$(APP_VERSION)/" ./build.gradle
+      sed -i "s/$(OLD_APP_VERSION)/$(NEW_TAG)/" ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
