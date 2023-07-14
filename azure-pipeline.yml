@@ -20,7 +20,7 @@ jobs:
 - job: IncrementVersion
   displayName: 'Increment Version'
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'macOS-11'
   steps:
   - checkout: self
     persistCredentials: true
