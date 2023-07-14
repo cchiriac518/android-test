@@ -18,7 +18,7 @@ resources:
 
 jobs:
 - job: AutomateTagging
-  displayName: 'Increment Version'
+  displayName: 'Automate Tagging'
   pool:
     vmImage: 'macOS-11'
   steps:
@@ -101,7 +101,7 @@ jobs:
       git fetch --all
       git branch --list
       echo $NEW_TAG
-      SDK_VERSION=$(grep -oE "com\.github\.test-android-sdk:([0-9]+\.?){3}" build.gradle | awk -F ":" '{print $2}')
+      SDK_VERSION=$(grep -oE "com\.github\.test-android-sdk:[0-9]+(\.[0-9]+)+\.[0-9]+" build.gradle | awk -F ":" '{print $2}')
       echo $SDK_VERSION
       gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
       cat build.gradle
