@@ -62,7 +62,7 @@ jobs:
       echo $NEW_VERSION_CODE
       echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
       cat ./gradle.properties
-      sed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties | sed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+      gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties | gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
       echo "testtt"
       cat ./gradle.properties
       git config --global user.email "cchiriac518@gmail.com"
@@ -97,7 +97,7 @@ jobs:
       git fetch --all
       git branch --list
       echo $NEW_TAG
-      sed -i "s/$(OLD_APP_VERSION)/$(NEW_TAG)/" ./build.gradle
+      gsed -i "s/$(OLD_APP_VERSION)/$(NEW_TAG)/" ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
