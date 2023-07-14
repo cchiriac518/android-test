@@ -17,7 +17,7 @@ resources:
       type: github # Type of repository: git, github, githubenterprise, and bitbucket.
 
 jobs:
-- job: IncrementVersion
+- job: AutomateTagging
   displayName: 'Increment Version'
   pool:
     vmImage: 'macOS-11'
@@ -27,7 +27,7 @@ jobs:
     fetchTags: true
   - script: |
       brew install gnu-sed
-
+    displayName: 'Install gsed'
 
   - script: |
       cd android-test
@@ -102,7 +102,8 @@ jobs:
       git branch --list
       echo $NEW_TAG
       SDK_VERSION=$(grep -oE "com\.github\.test-android-sdk:([0-9]+\.?){3}" build.gradle | awk -F ":" '{print $2}')
-      gsed -i "s/$(SDK_VERSION)/$(NEW_TAG)/" ./build.gradle
+      echo $SDK_VERSION
+      gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
       git config --global user.name "cchiriac518"
