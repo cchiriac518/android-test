@@ -101,7 +101,7 @@ jobs:
       git fetch --all
       git branch --list
       echo $NEW_TAG
-      SDK_VERSION=$(grep -oP "(?<=com\.github\.test-android-sdk:)[\d.]*" build.gradle)
+      SDK_VERSION=$(grep -oE "com\.github\.test-android-sdk:([0-9]+\.?){3}" build.gradle | awk -F ":" '{print $2}')
       gsed -i "s/$(SDK_VERSION)/$(NEW_TAG)/" ./build.gradle
       cat build.gradle
       git config --global user.email "cchiriac518@gmail.com"
