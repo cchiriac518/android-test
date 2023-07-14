@@ -25,6 +25,9 @@ jobs:
   - checkout: self
     persistCredentials: true
     fetchTags: true
+  - script: |
+      brew install gnu-sed
+
 
   - script: |
       cd android-test
