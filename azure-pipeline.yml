@@ -117,6 +117,9 @@ stages:
       - checkout: test-app
         persistCredentials: true
         fetchTags: true
+      
+      - script: brew install gnu-sed
+        displayName: 'Install gsed'
 
       - script: |
           cd android-test
