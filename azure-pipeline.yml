@@ -53,6 +53,9 @@ stages:
     pool:
       vmImage: "macOS-11"
     steps:
+    - checkout: string # Required as first property. Configures checkout for the specified repository.
+      fetchTags: true # Set to 'true' to sync tags when fetching the repo, or 'false' to not sync tags. See remarks for the default behavior.
+      persistCredentials: true # Set to 'true' to leave the OAuth token in the Git config after the initial fetch. The default is not to leave it.
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
@@ -94,10 +97,6 @@ stages:
           
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
           gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
-
-          echo $(GITHUB_TOKEN) > gh-token.txt
-          gh auth login --with-token < gh-token.txt
-          rm gh-token.txt
 
           git add gradle.properties
           git commit -m "Update app version"
