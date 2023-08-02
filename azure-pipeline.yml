@@ -53,11 +53,12 @@ stages:
     pool:
       vmImage: "macOS-11"
     steps:
-    - checkout: self # Required as first property. Configures checkout for the specified repository.
-      fetchTags: true # Set to 'true' to sync tags when fetching the repo, or 'false' to not sync tags. See remarks for the default behavior.
-      persistCredentials: true # Set to 'true' to leave the OAuth token in the Git config after the initial fetch. The default is not to leave it.
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
+
+      - checkout: self 
+        fetchTags: true 
+        persistCredentials: true 
 
       - script: brew install gnu-sed
         displayName: 'Install gsed'
@@ -107,6 +108,10 @@ stages:
         displayName: 'Update version in gradle properties file'
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+    
+        fetchTags: true 
+        persistCredentials: true 
+
       - script: |
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
