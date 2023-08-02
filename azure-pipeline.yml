@@ -13,13 +13,13 @@ trigger:
 variables:
   - group: Mobile-Apps
 
-# resources:
-#     repositories:
-#     - repository: test-app # Required as first property. Alias for the repository.
-#       endpoint: github_sc
-#       name: cchiriac518/library-test
-#       ref: refs/heads/develop # ref name to checkout; defaults to 'refs/heads/main'. The branch checked out by default whenever the resource trigger fires.
-#       type: github # Type of repository: git, github, githubenterprise, and bitbucket.
+resources:
+    repositories:
+    - repository: test-app
+      endpoint: github_sc
+      name: cchiriac518/android-app
+      ref: refs/heads/develop
+      type: github
 
 # parameters:
 #   - name: "maintenance_env"
@@ -114,11 +114,31 @@ stages:
         fetchTags: true 
         persistCredentials: true
 
+      - checkout: test-app
+        persistCredentials: true
+        fetchTags: true
+
       - script: |
+          cd android-test
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
           echo "Creating Git tag $NEW_TAG"
           git tag $NEW_TAG
           git push origin --tags
+          echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
         displayName: 'Create Updated Tag and Push'
+
+      - script: |
+          cd android-app
+          git fetch --all
+          git checkout develop
+          git config --global user.email "az-pipeline@gmail.com"
+          git config --global user.name "az-pipeline"
+
+          SDK_VERSION=$(awk -F ":" '/com\.github\.aacom/ {print $NF}' build.gradle | grep -oE "[0-9]+(\.[0-9]+)+\.[0-9]+")
+          gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
+          git add .
+          git commit -m "Updated android-sdk dependency to latest version"
+          git push
+        displayName: 'Update sdk version in main app'
