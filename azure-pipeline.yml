@@ -108,9 +108,9 @@ stages:
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
       - script: |
-          VERSION_NAME=$(grep "VERSION_NAME" gradle.properties | cut -d'=' -f2)
-          VERSION_CODE=$(grep "VERSION_CODE" gradle.properties | cut -d'=' -f2)
-          NEW_TAG=$(VERSION_NAME)$(VERSION_CODE)
+          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
           echo "Creating Git tag $NEW_TAG"
           git tag $NEW_TAG
           git push origin --tags
