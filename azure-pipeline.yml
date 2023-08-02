@@ -54,7 +54,9 @@ stages:
       vmImage: "macOS-11"
       
     steps:
-    - script: gradle clean test
+    - script: |
+        cd cd android-test
+        gradle clean test
       displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
