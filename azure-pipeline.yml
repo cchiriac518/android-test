@@ -1,175 +1,117 @@
+name: AutoTagging-$(Date:dd.MM)
+
 trigger:
   branches:
     include:
       - main
+      - stage
 
   paths:
     exclude:
-      - version.txt
       - gradle.properties
 
-resources:
-    repositories:
-    - repository: test-app # Required as first property. Alias for the repository.
-      endpoint: github_sc
-      name: cchiriac518/library-test
-      ref: refs/heads/develop # ref name to checkout; defaults to 'refs/heads/main'. The branch checked out by default whenever the resource trigger fires.
-      type: github # Type of repository: git, github, githubenterprise, and bitbucket.
+variables:
+  - group: Mobile-Apps
 
-jobs:
-- job: AutomateTagging
-  displayName: 'Automate Tagging'
-  pool:
-    vmImage: 'macOS-11'
-  steps:
-  - checkout: self
-    persistCredentials: true
-    fetchTags: true
-  - script: |
-      brew install gnu-sed
-    displayName: 'Install gsed'
+# resources:
+#     repositories:
+#     - repository: test-app # Required as first property. Alias for the repository.
+#       endpoint: github_sc
+#       name: cchiriac518/library-test
+#       ref: refs/heads/develop # ref name to checkout; defaults to 'refs/heads/main'. The branch checked out by default whenever the resource trigger fires.
+#       type: github # Type of repository: git, github, githubenterprise, and bitbucket.
 
-  - script: |
-      cd android-test
-      git fetch --all --tags
-      LAST_TAG=$(git tag | tail -n 1)
-      IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
-      MAJOR=${VERSION_PARTS[0]#v}
-      MINOR=${VERSION_PARTS[1]}
-      PATCH=${VERSION_PARTS[2]}
-      BUILD=${VERSION_PARTS[3]}
+# parameters:
+#   - name: "maintenance_env"
+#     type: string
+#     default: stage3
+#     values:
+#       - Stage3
+#       - Preprod
+#   - name: "Maintenance_page"
+#     type: string
+#     values:
+#       - on
+#       - off
+
+# variables:
+#   - name: deploy_env
+#     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+#       value: PREPROD
+#     ${{ else }}: 
+#       value: STAGE3
+#   - name: on_ff
+#     ${{ if eq(parameters.maintenance_status, 'true') }}:
+#       value: ON
+#     ${{ else }}: 
+#       value: OFF
   
-      VERSION_NAME=$(grep "VERSION_NAME" gradle.properties | cut -d'=' -f2)
-      VERSION_CODE=$(grep "VERSION_CODE" gradle.properties | cut -d'=' -f2)
+stages: 
+- stage: AutoTagging #${{ parameters.maintenance_env }}_Maintenance_${{ variables.on_ff }}
+  jobs:
+  - job: AutoTagging #${{ parameters.maintenance_env }}_Maintenance_${{ variables.on_ff }}
+    pool:
+      vmImage: "macOS-11"
+    steps:
+    - checkout: self # Required as first property. Configures checkout for the specified repository.
+      fetchTags: true # Set to 'true' to sync tags when fetching the repo, or 'false' to not sync tags. See remarks for the default behavior.
+      persistCredentials: true # Set to 'true' to leave the OAuth token in the Git config after the initial fetch. The default is not to leave it.
 
-      PATCH=$((PATCH+1))
-      BUILD=$((BUILD+1))
+    - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
+      - script: brew install gnu-sed
+        displayName: 'Install gsed'
 
+      - script: |
+          # Read the VERSION_NAME and VERSION_CODE from the properties file and trim leading/trailing whitespaces
+          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
 
-      if [[ $PATCH -eq 9 ]]; then
-        MINOR=$((MINOR+1))
-        PATCH=0
-      fi
+          # Concatenate VERSION_NAME and VERSION_CODE with a period as the separator
+          LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
-      if [[ $MINOR -eq 9 ]]; then
-        MAJOR=$((MAJOR+1))
-        MINOR=0
-      fi
+          # Print the value of LAST_V
+          echo "$LAST_V"
 
-      NEW_TAG="${MAJOR}.${MINOR}.${PATCH}.${BUILD}"
-      NEW_TAG="${NEW_TAG// /}"
-      NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
-      NEW_VERSION_CODE="${BUILD}"
-      echo $NEW_VERSION_NAME
-      echo $NEW_VERSION_CODE
-      echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
-      cat ./gradle.properties
-      gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
-      gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
-      echo "testtt"
-      cat ./gradle.properties
-      git config --global user.email "cchiriac518@gmail.com"
-      git config --global user.name "cchiriac518"
-      echo $NEW_TAG > version.txt
-      git add version.txt gradle.properties
-      git commit -m "Update app version"
-      git push origin HEAD:$(Build.SourceBranch)
-      echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
+          IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+          BUILD=${VERSION_PARTS[3]}
 
-    displayName: 'Get Last Tag and Increment Minor Version'
+          PATCH=$((PATCH+1))
+          BUILD=$((BUILD+1))
 
-  - script: |
-      cd android-test
-      echo "Creating Git tag $NEW_TAG"
-      git tag $NEW_TAG
-      git push origin --tags
-    displayName: 'Create Git Tag and Push'
+          if [[ $PATCH -eq 9 ]]; then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          fi
 
+          if [[ $MINOR -eq 9 ]]; then
+            MAJOR=$((MAJOR+1))
+            MINOR=0
+          fi
 
-  # - script: |
-  #     echo "##vso[task.setvariable variable=OLD_APP_VERSION]$LAST_TAG"
-  #     echo "##vso[task.setvariable variable=APP_VERSION]$NEW_TAG"
-  #   displayName: 'Set Pipeline Variable for Version Tracking'
+          NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
+          NEW_VERSION_CODE="${BUILD}"
+          
+          gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+          gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
 
-  - checkout: test-app
-    persistCredentials: true
-    fetchTags: true
+          git config --global user.email "az-pipeline@gmail.com"
+          git config --global user.name "az-pipeline"
 
-  - script: |
-      cd library-test
-      git fetch --all
-      git branch --list
-      echo $NEW_TAG
-      SDK_VERSION=$(grep -oE "com\.github\.test-android-sdk:[0-9]+(\.[0-9]+)+\.[0-9]+" build.gradle | awk -F ":" '{print $2}')
-      echo $SDK_VERSION
-      gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
-      cat build.gradle
-      git config --global user.email "cchiriac518@gmail.com"
-      git config --global user.name "cchiriac518"
-      git add .
-      git checkout develop
-      git commit -m "Updated android-sdk version"
-      git push
-    displayName: 'Modify file and commit changes'
+          git add gradle.properties
+          git commit -m "Update app version"
+          git push origin HEAD:$(Build.SourceBranch)
+        displayName: 'Update version in gradle properties file'
 
-
-# trigger:
-#   branches:
-#     include:
-#       - main
-
-# pool:
-#   vmImage: 'ubuntu-latest'
-
-# steps:
-# - script: |
-#     curl -s "https://get.sdkman.io" | bash
-#     source "$HOME/.sdkman/bin/sdkman-init.sh"
-#     sdk install gradle
-#     gradle wrapper
-#   displayName: 'Install Gradle and Generate Wrapper'
-
-# - script: |
-#     ./gradlew build
-#   displayName: 'Build'
-
-# - script: |
-#     ./gradlew publish
-#   displayName: 'Publish'
-
-# - task: PublishBuildArtifacts@1
-#   displayName: 'Publish Build Artifacts'
-#   inputs:
-#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#     ArtifactName: 'my-app'
-
-
-
-
-
-
-  # - script: |
-  #     curl -s "https://get.sdkman.io" | bash
-  #     source "$HOME/.sdkman/bin/sdkman-init.sh"
-  #     sdk install gradle 8.1
-  #     gradle_path=$(which gradle)
-  #     $gradle_path wrapper --gradle-version 8.1 --distribution-type all
-
-  #   displayName: 'Install Gradle'
-
-  # - task: Gradle@2
-  #   inputs:
-  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
-  #     gradleWrapperFile: 'gradlew'
-  #     tasks: 'assembleDebug'
-  #   displayName: 'Build'
-
-  # - task: Gradle@2
-  #   inputs:
-  #     workingDirectory: '$(System.DefaultWorkingDirectory)'
-  #     gradleWrapperFile: 'gradlew'
-  #     tasks: 'appCenterUpload'
-  #     javaHomeOption: 'JDKVersion'
-  #     jdkVersionOption: '11'
-  #   displayName: 'Publish to App Center'
+    - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+      - script: |
+          VERSION_NAME=$(grep "VERSION_NAME" gradle.properties | cut -d'=' -f2)
+          VERSION_CODE=$(grep "VERSION_CODE" gradle.properties | cut -d'=' -f2)
+          NEW_TAG=$(VERSION_NAME)$(VERSION_CODE)
+          echo "Creating Git tag $NEW_TAG"
+          git tag $NEW_TAG
+          git push origin --tags
+        displayName: 'Create Updated Tag and Push'
