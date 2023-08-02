@@ -55,7 +55,7 @@ stages:
       
     steps:
     - script: |
-        cd cd android-test
+        cd android-test
         gradle clean test
       displayName: 'Run Unit Tests'
 
