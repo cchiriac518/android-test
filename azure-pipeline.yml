@@ -59,10 +59,7 @@ stages:
       fetchTags: true 
       persistCredentials: true 
 
-    - script: |
-        ls -la
-        cd android-test
-        gradle clean test
+    - script: gradle clean test
       displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
