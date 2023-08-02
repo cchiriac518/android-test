@@ -105,6 +105,7 @@ stages:
           git add gradle.properties
           git commit -m "Update app version"
           git push origin HEAD:$(Build.SourceBranch)
+          
         displayName: 'Update version in gradle properties file'
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
@@ -112,7 +113,7 @@ stages:
       - checkout: self 
         fetchTags: true 
         persistCredentials: true
-        
+
       - script: |
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
