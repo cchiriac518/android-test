@@ -54,6 +54,11 @@ stages:
       vmImage: "macOS-11"
       
     steps:
+
+    - checkout: self 
+      fetchTags: true 
+      persistCredentials: true 
+
     - script: |
         cd android-test
         gradle clean test
@@ -69,10 +74,6 @@ stages:
       displayName: 'Publish Test Results'
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
-
-      - checkout: self 
-        fetchTags: true 
-        persistCredentials: true 
 
       - script: brew install gnu-sed
         displayName: 'Install gsed'
@@ -123,10 +124,6 @@ stages:
         displayName: 'Update version in gradle properties file'
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-
-      - checkout: self 
-        fetchTags: true 
-        persistCredentials: true
 
       - checkout: test-app
         persistCredentials: true
