@@ -60,6 +60,7 @@ stages:
       persistCredentials: true 
 
     - script: |
+        ls -la
         cd android-test
         gradle clean test
       displayName: 'Run Unit Tests'
