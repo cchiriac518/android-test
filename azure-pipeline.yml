@@ -141,6 +141,8 @@ stages:
 
           SDK_VERSION=$(awk -F ":" '/com\.github\.aacom/ {print $NF}' build.gradle | grep -oE "[0-9]+(\.[0-9]+)+\.[0-9]+")
           gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
+          echo $SDK_VERSION
+          echo $NEW_TAG
           git add .
           git commit -m "Updated android-sdk dependency to latest version"
           git push
