@@ -53,7 +53,7 @@ stages:
     pool:
       vmImage: "macOS-11"
     steps:
-    - checkout: string # Required as first property. Configures checkout for the specified repository.
+    - checkout: self # Required as first property. Configures checkout for the specified repository.
       fetchTags: true # Set to 'true' to sync tags when fetching the repo, or 'false' to not sync tags. See remarks for the default behavior.
       persistCredentials: true # Set to 'true' to leave the OAuth token in the Git config after the initial fetch. The default is not to leave it.
 
