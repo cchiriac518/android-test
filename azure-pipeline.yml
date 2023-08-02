@@ -99,9 +99,6 @@ stages:
           gh auth login --with-token < gh-token.txt
           rm gh-token.txt
 
-       # git config --global user.email "aa-az-pipeline@gmail.com"
-       # git config --global user.name "aa-az-pipeline"
-
           git add gradle.properties
           git commit -m "Update app version"
           git push origin HEAD:$(Build.SourceBranch)
