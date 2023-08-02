@@ -64,7 +64,7 @@ stages:
         displayName: 'Install gsed'
 
       - script: |
-          # Read the VERSION_NAME and VERSION_CODE from the properties file and trim leading/trailing whitespaces
+          
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
 
