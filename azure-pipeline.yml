@@ -107,6 +107,14 @@ stages:
           BUILD=${VERSION_PARTS[3]}
           
           PATCH=$((PATCH+1))
+          
+          echo "this is MAJOR $MAJOR"
+          echo "this is MINOR $MINOR"
+          echo "this is PATCH $PATCH"
+          echo "this is BUILD $BUILD"
+
+
+
 
           if [[ $PATCH -eq 9 ]]; then
             MINOR=$((MINOR+1))
@@ -119,12 +127,11 @@ stages:
           fi
 
           NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
-          NEW_VERSION_CODE="${BUILD}"
+
           
           echo "this is the new version $NEW_VERSION_NAME.$NEW_VERSION_CODE"
 
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
-          gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
 
           git add gradle.properties
           git commit -m "Updated version code"
