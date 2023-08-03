@@ -161,6 +161,7 @@ stages:
         displayName: 'Update sdk version in main app'
 
       - script: |
+          cd android-test
           echo $(GITHUB_TOKEN) > gh-token.txt
           gh auth login --with-token < gh-token.txt
           rm gh-token.txt
