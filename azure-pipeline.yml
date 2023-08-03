@@ -85,7 +85,6 @@ stages:
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
           # Print the value of LAST_V
-          echo "$LAST_V"
 
           IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
           MAJOR=${VERSION_PARTS[0]}
