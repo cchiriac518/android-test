@@ -58,6 +58,7 @@ stages:
         displayName: 'Install gsed'
 
       - script: |
+          cd android-test
           
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
