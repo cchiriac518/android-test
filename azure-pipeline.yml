@@ -21,35 +21,11 @@ resources:
       ref: refs/heads/develop
       type: github
 
-# parameters:
-#   - name: "maintenance_env"
-#     type: string
-#     default: stage3
-#     values:
-#       - Stage3
-#       - Preprod
-#   - name: "Maintenance_page"
-#     type: string
-#     values:
-#       - on
-#       - off
-
-# variables:
-#   - name: deploy_env
-#     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-#       value: PREPROD
-#     ${{ else }}: 
-#       value: STAGE3
-#   - name: on_ff
-#     ${{ if eq(parameters.maintenance_status, 'true') }}:
-#       value: ON
-#     ${{ else }}: 
-#       value: OFF
   
 stages: 
-- stage: AutoTagging #${{ parameters.maintenance_env }}_Maintenance_${{ variables.on_ff }}
+- stage: AutoTagging
   jobs:
-  - job: AutoTagging #${{ parameters.maintenance_env }}_Maintenance_${{ variables.on_ff }}
+  - job: AutoTagging
     pool:
       vmImage: "macOS-11"
       
