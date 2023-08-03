@@ -166,6 +166,7 @@ stages:
           gh auth login --with-token < gh-token.txt
           rm gh-token.txt
           git fetch --all --tags
+          git pull
           echo "Creating PR main->develop"
           gh pr create --base $(Build.SourceBranch) --head stage --title "Sync stage with main" --body "Sync stage with main"
         displayName: 'Create PR to update develop branch with new version'
