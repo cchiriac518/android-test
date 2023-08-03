@@ -159,3 +159,13 @@ stages:
           git commit -m "Updated android-sdk dependency to latest version"
           git push
         displayName: 'Update sdk version in main app'
+
+      - script: |
+          echo $(GITHUB_TOKEN) > gh-token.txt
+          gh auth login --with-token < gh-token.txt
+          rm gh-token.txt
+          git fetch --all --tags
+          echo "Creating PR main->develop"
+          gh pr create --base $(Build.SourceBranch) --head stage --title "Sync stage with main" --body "Sync stage with main"
+        displayName: 'Create PR to update develop branch with new version'
+
