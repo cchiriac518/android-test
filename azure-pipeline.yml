@@ -85,7 +85,6 @@ stages:
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
           # Print the value of LAST_V
-          echo "$LAST_V"
 
           IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
           MAJOR=${VERSION_PARTS[0]}
@@ -93,30 +92,17 @@ stages:
           PATCH=${VERSION_PARTS[2]}
           BUILD=${VERSION_PARTS[3]}
 
-          PATCH=$((PATCH+1))
           BUILD=$((BUILD+1))
 
-          if [[ $PATCH -eq 9 ]]; then
-            MINOR=$((MINOR+1))
-            PATCH=0
-          fi
-
-          if [[ $MINOR -eq 9 ]]; then
-            MAJOR=$((MAJOR+1))
-            MINOR=0
-          fi
-
-          NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
           NEW_VERSION_CODE="${BUILD}"
           
-          gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
           gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
 
           git config --global user.email "az-pipeline@gmail.com"
           git config --global user.name "az-pipeline"
 
           git add gradle.properties
-          git commit -m "Update app version"
+          git commit -m "Updated version code"
           git push origin HEAD:$(Build.SourceBranch)
           
         displayName: 'Update version in gradle properties file'
@@ -134,8 +120,39 @@ stages:
           cd android-test
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
+          LAST_V="${VERSION_NAME}.${VERSION_CODE}"
+
+          IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+          
+          PATCH=$((PATCH+1))
+
+          if [[ $PATCH -eq 9 ]]; then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          fi
+          
+          if [[ $MINOR -eq 9 ]]; then
+            MAJOR=$((MAJOR+1))
+            MINOR=0
+          fi
+
+          NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
+          NEW_VERSION_CODE="${BUILD}"
+
+          gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+          gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+
+          git add gradle.properties
+          git commit -m "Updated version code"
+          git push origin HEAD:$(Build.SourceBranch)
+
           echo "Creating Git tag $NEW_TAG"
+          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
           git tag $NEW_TAG
           git push origin --tags
           echo "##vso[task.setvariable variable=NEW_TAG]$NEW_TAG"
