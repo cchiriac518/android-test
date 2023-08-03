@@ -52,13 +52,26 @@ stages:
   - job: AutoTagging #${{ parameters.maintenance_env }}_Maintenance_${{ variables.on_ff }}
     pool:
       vmImage: "macOS-11"
+      
     steps:
 
-    - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
+    - checkout: self 
+      fetchTags: true 
+      persistCredentials: true 
 
-      - checkout: self 
-        fetchTags: true 
-        persistCredentials: true 
+    - script: gradle clean test
+      displayName: 'Run Unit Tests'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+        failTaskOnFailedTests: true
+        searchFolder: '$(System.DefaultWorkingDirectory)/android-test'
+      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+      displayName: 'Publish Test Results'
+
+    - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
       - script: brew install gnu-sed
         displayName: 'Install gsed'
@@ -110,10 +123,6 @@ stages:
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
 
-      - checkout: self 
-        fetchTags: true 
-        persistCredentials: true
-
       - checkout: test-app
         persistCredentials: true
         fetchTags: true
@@ -141,8 +150,6 @@ stages:
 
           SDK_VERSION=$(awk -F ":" '/com\.github\.aacom/ {print $NF}' build.gradle | grep -oE "[0-9]+(\.[0-9]+)+\.[0-9]+")
           gsed -i "s/${SDK_VERSION}/${NEW_TAG}/" ./build.gradle
-          echo $SDK_VERSION
-          echo $NEW_TAG
           git add .
           git commit -m "Updated android-sdk dependency to latest version"
           git push
