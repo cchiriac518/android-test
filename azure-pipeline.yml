@@ -120,6 +120,8 @@ stages:
 
           NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
           NEW_VERSION_CODE="${BUILD}"
+          
+          echo "this is the new version $NEW_VERSION_NAME.$NEW_VERSION_CODE"
 
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
           gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
