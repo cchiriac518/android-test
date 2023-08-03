@@ -20,7 +20,6 @@ resources:
       name: cchiriac518/android-app
       ref: refs/heads/develop
       type: github
-
   
 stages: 
 - stage: AutoTagging
@@ -30,12 +29,18 @@ stages:
       vmImage: "macOS-11"
       
     steps:
-
+    
     - checkout: self 
       fetchTags: true 
-      persistCredentials: true 
+      persistCredentials: true
+      
+    - checkout: test-app
+      persistCredentials: true
+      fetchTags: true
 
-    - script: gradle clean test
+    - script: |
+        cd android-test 
+        gradle clean test
       displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
@@ -53,6 +58,7 @@ stages:
         displayName: 'Install gsed'
 
       - script: |
+          cd android-test
           
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
@@ -84,10 +90,6 @@ stages:
         displayName: 'Update version in gradle properties file'
 
     - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-
-      - checkout: test-app
-        persistCredentials: true
-        fetchTags: true
       
       - script: brew install gnu-sed
         displayName: 'Install gsed'
