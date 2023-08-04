@@ -165,6 +165,6 @@ stages:
           git fetch --all --tags
           git pull
           echo "Creating PR main->stage"
-          gh pr create --base $(Build.SourceBranch) --head stage --title "Sync stage with main" --body "Sync stage with main"
+          gh pr create --base $(Build.SourceBranch) --head origin/stage --title "Sync stage with main" --body "Sync stage with main"
         displayName: 'Create PR to update develop branch with new version'
 
