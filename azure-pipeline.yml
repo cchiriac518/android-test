@@ -41,7 +41,7 @@ stages:
     - script: |
         cd android-test 
         gradle clean test
-      displayName: 'Run Unit Testss'
+      displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
       inputs:
@@ -112,9 +112,6 @@ stages:
           echo "this is MINOR $MINOR"
           echo "this is PATCH $PATCH"
           echo "this is BUILD $BUILD"
-
-
-
 
           if [[ $PATCH -eq 10 ]]; then
             MINOR=$((MINOR+1))
