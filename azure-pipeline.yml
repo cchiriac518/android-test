@@ -55,7 +55,7 @@ stages:
     - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
       - script: brew install gnu-sed
-        displayName: 'Install gsed'
+        displayName: 'Install gsedd'
 
       - script: |
           cd android-test
