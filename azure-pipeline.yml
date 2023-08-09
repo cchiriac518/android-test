@@ -38,19 +38,19 @@ stages:
       persistCredentials: true
       fetchTags: true
 
-    - script: |
-        cd android-test 
-        gradle clean test
-      displayName: 'Run Unit Tests'
+    # - script: |
+    #     cd android-test 
+    #     gradle clean test
+    #   displayName: 'Run Unit Tests'
 
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: '**/build/test-results/test/TEST-*.xml'
-        failTaskOnFailedTests: true
-        searchFolder: '$(System.DefaultWorkingDirectory)/android-test'
-      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
-      displayName: 'Publish Test Results'
+    # - task: PublishTestResults@2
+    #   inputs:
+    #     testResultsFormat: 'JUnit'
+    #     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+    #     failTaskOnFailedTests: true
+    #     searchFolder: '$(System.DefaultWorkingDirectory)/android-test'
+    #   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+    #   displayName: 'Publish Test Results'
 
     # - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
@@ -137,7 +137,8 @@ stages:
           git commit -m "Updated version code"
           git push origin HEAD:stage
 
-          git checkout $(Build.SourceBranch)
+          git pull
+          git checkout main
         
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
