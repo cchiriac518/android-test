@@ -131,13 +131,14 @@ stages:
           
           git pull
           git checkout stage
+          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
           git add gradle.properties
           git commit -m "Updated version code"
           git push origin HEAD:stage
 
           git checkout $(Build.SourceBranch)
-
+        
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
