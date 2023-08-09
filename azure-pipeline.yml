@@ -38,19 +38,19 @@ stages:
       persistCredentials: true
       fetchTags: true
 
-    # - script: |
-    #     cd android-test 
-    #     gradle clean test
-    #   displayName: 'Run Unit Tests'
+    - script: |
+        cd android-test 
+        gradle clean test
+      displayName: 'Run Unit Tests'
 
-    # - task: PublishTestResults@2
-    #   inputs:
-    #     testResultsFormat: 'JUnit'
-    #     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
-    #     failTaskOnFailedTests: true
-    #     searchFolder: '$(System.DefaultWorkingDirectory)/android-test'
-    #   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
-    #   displayName: 'Publish Test Results'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+        failTaskOnFailedTests: true
+        searchFolder: '$(System.DefaultWorkingDirectory)/android-test'
+      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+      displayName: 'Publish Test Results'
 
     # - ${{ if eq(variables['Build.SourceBranchName'], 'stage') }}:
 
@@ -95,51 +95,7 @@ stages:
         displayName: 'Install gsed'
 
       - script: |
-          cd android-test
-          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          LAST_V="${VERSION_NAME}.${VERSION_CODE}"
-
-          IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
-          MAJOR=${VERSION_PARTS[0]}
-          MINOR=${VERSION_PARTS[1]}
-          PATCH=${VERSION_PARTS[2]}
-          BUILD=${VERSION_PARTS[3]}
-          
-          PATCH=$((PATCH+1))
-
-          if [[ $PATCH -eq 10 ]]; then
-            MINOR=$((MINOR+1))
-            PATCH=0
-          fi
-          
-          if [[ $MINOR -eq 10 ]]; then
-            MAJOR=$((MAJOR+1))
-            MINOR=0
-          fi
-
-          NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
-
-          
-          echo "this is the new version $NEW_VERSION_NAME.$$BUILD"
-
-          gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
-
-          git add gradle.properties
-          git commit -m "Updated version code"
-          git push origin HEAD:$(Build.SourceBranch)
-          
-          git pull
-          git checkout stage
-          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
-          git add gradle.properties
-          git commit -m "Updated version code"
-          git push origin HEAD:stage
-
-          git pull
-          git checkout main
-        
+          cd android-test        
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
@@ -170,3 +126,48 @@ stages:
       #     gh pr create --base stage --head $(Build.SourceBranch) --title "Sync stage with main" --body "Sync stage with main"
       #   displayName: 'Create PR to update develop branch with new version'
 
+
+
+
+          # VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          # VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          # LAST_V="${VERSION_NAME}.${VERSION_CODE}"
+
+          # IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
+          # MAJOR=${VERSION_PARTS[0]}
+          # MINOR=${VERSION_PARTS[1]}
+          # PATCH=${VERSION_PARTS[2]}
+          # BUILD=${VERSION_PARTS[3]}
+          
+          # PATCH=$((PATCH+1))
+
+          # if [[ $PATCH -eq 10 ]]; then
+          #   MINOR=$((MINOR+1))
+          #   PATCH=0
+          # fi
+          
+          # if [[ $MINOR -eq 10 ]]; then
+          #   MAJOR=$((MAJOR+1))
+          #   MINOR=0
+          # fi
+
+          # NEW_VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
+
+          
+          # echo "this is the new version $NEW_VERSION_NAME.$$BUILD"
+
+          # gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+
+          # git add gradle.properties
+          # git commit -m "Updated version code"
+          # git push origin HEAD:$(Build.SourceBranch)
+
+
+          # NEW_TAG="${VERSION_NAME}.${VERSION_CODE}"
+          # git pull
+          # git checkout stage
+          # VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          # gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+          # git add gradle.properties
+          # git commit -m "Updated version code"
+          # git push origin HEAD:stage
