@@ -64,7 +64,7 @@ stages:
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$((VERSION_CODE+1))
           
-          cat $VERSION_CODE > build-version.txt
+          echo $VERSION_CODE > build-version.txt
 
           git config --global user.email "az-pipeline@gmail.com"
           git config --global user.name "az-pipeline"
