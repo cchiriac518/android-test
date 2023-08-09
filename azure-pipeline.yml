@@ -66,7 +66,7 @@ stages:
           #Concatenate VERSION_NAME and VERSION_CODE with a period as the separator
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
-          # Print the value of LAST_V
+          #Print the value of LAST_V
 
           IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
           MAJOR=${VERSION_PARTS[0]}
