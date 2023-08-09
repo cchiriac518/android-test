@@ -63,7 +63,7 @@ stages:
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
 
-          # Concatenate VERSION_NAME and VERSION_CODE with a period as the separator
+          #Concatenate VERSION_NAME and VERSION_CODE with a period as the separator
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
           # Print the value of LAST_V
