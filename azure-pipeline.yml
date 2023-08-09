@@ -9,6 +9,7 @@ trigger:
   paths:
     exclude:
       - gradle.properties
+      - build-version.txt
 
 variables:
   - group: Mobile-Apps
@@ -59,31 +60,16 @@ stages:
 
       - script: |
           cd android-test
-          
-          VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+        
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-
-          #Concatenate VERSION_NAME and VERSION_CODE with a period as the separator
-          LAST_V="${VERSION_NAME}.${VERSION_CODE}"
-
-          #Print the value of LAST_V
-
-          IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
-          MAJOR=${VERSION_PARTS[0]}
-          MINOR=${VERSION_PARTS[1]}
-          PATCH=${VERSION_PARTS[2]}
-          BUILD=${VERSION_PARTS[3]}
-
-          BUILD=$((BUILD+1))
-
-          NEW_VERSION_CODE="${BUILD}"
+          VERSION_CODE=$((VERSION_CODE+1))
           
-          gsed -i "s/${VERSION_CODE}/${NEW_VERSION_CODE}/" ./gradle.properties
+          cat $VERSION_CODE > build-version.txt
 
           git config --global user.email "az-pipeline@gmail.com"
           git config --global user.name "az-pipeline"
 
-          git add gradle.properties
+          git add build-version.txt
           git commit -m "Updated version code"
           git push origin HEAD:$(Build.SourceBranch)
           
@@ -98,7 +84,7 @@ stages:
           cd android-test
           git pull
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION_CODE=$(cat build-version.txt)
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
 
           IFS='.' read -ra VERSION_PARTS <<< "$LAST_V"
@@ -125,6 +111,8 @@ stages:
           echo "this is the new version $NEW_VERSION_NAME.$BUILD"
 
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+          gsed -i "s/${VERSION_CODE}/${BUILD}/" ./gradle.properties
+
 
           git config --global user.email "az-pipeline@gmail.com"
           git config --global user.name "az-pipeline"
@@ -137,6 +125,7 @@ stages:
           git checkout stage
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
+          gsed -i "s/${VERSION_CODE}/${BUILD}/" ./gradle.properties
           git add gradle.properties
           git commit -m "Updated version code"
           git push origin HEAD:stage
