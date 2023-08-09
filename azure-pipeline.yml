@@ -126,6 +126,9 @@ stages:
 
           gsed -i "s/${VERSION_NAME}/${NEW_VERSION_NAME}/" ./gradle.properties
 
+          git config --global user.email "az-pipeline@gmail.com"
+          git config --global user.name "az-pipeline"
+
           git add gradle.properties
           git commit -m "Updated version code"
           git push origin HEAD:$(Build.SourceBranch)
