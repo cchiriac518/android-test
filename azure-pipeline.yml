@@ -96,7 +96,7 @@ stages:
 
       - script: |
           cd android-test
-          
+          git pull
           VERSION_NAME=$(grep -E '^VERSION_NAME=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_CODE=$(grep -E '^VERSION_CODE=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
           LAST_V="${VERSION_NAME}.${VERSION_CODE}"
