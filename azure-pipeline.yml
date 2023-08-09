@@ -42,7 +42,7 @@ stages:
     - script: |
         cd android-test 
         gradle clean test
-      displayName: 'Run UnitTests'
+      displayName: 'Run Unit bTests'
 
     - task: PublishTestResults@2
       inputs:
