@@ -92,7 +92,8 @@ stages:
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
           BUILD=${VERSION_PARTS[3]}
-          
+          echo "VERSION_CODE IS $VERSION_CODE"
+          echo "BUILD IS $BUILD"
           PATCH=$((PATCH+1))
 
           if [[ $PATCH -eq 10 ]]; then
